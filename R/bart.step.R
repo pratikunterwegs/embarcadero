@@ -60,12 +60,18 @@ bart.step <- function(x.data, y.data, ri.data = NULL,
     fitobj <- model.0$fit
   }
 
-  dropnames <- colnames(x.data)[!(colnames(x.data) %in% names(which(unlist(attr(fitobj$data@x, "drop")) == FALSE)))]
+  dropnames <- colnames(x.data)[!(colnames(x.data) %in% names(
+    which(unlist(attr(fitobj$data@x, "drop")) == FALSE)
+  ))]
 
-  if (length(dropnames) == 0) {} else {
+  if (length(dropnames) == 0) {
+
+  } else {
     message("Some of your variables have been automatically dropped by dbarts.")
     message("(This could be because they're characters, homogenous, etc.)")
-    message("It is strongly recommended that you remove these from the raw data:")
+    message(
+      "It is strongly recommended that you remove these from the raw data:"
+    )
     message(paste(dropnames, collapse = " "), " \n")
   }
 
@@ -77,7 +83,11 @@ bart.step <- function(x.data, y.data, ri.data = NULL,
   if (full == TRUE) {
     varimp.diag(x.data, y.data, ri.data, iter = iter.plot, quiet = quiet2)
   }
-  vs <- variable.step(x.data, y.data, ri.data, n.trees = tree.step, iter = iter.step, quiet = quiet2)
+  vs <- variable.step(
+    x.data, y.data, ri.data,
+    n.trees = tree.step,
+    iter = iter.step, quiet = quiet2
+  )
 
   invisible(best.model <- bart.flex(
     x.data = x.data[, vs], y.data = y.data,

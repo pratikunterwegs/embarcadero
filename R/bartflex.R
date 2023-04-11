@@ -38,12 +38,15 @@ bart.flex <- function(x.data, y.data, ri.data = NULL,
     if (!is.null(ri.name)) {
       colnames(train)[ncol(train)] <- ri.name
     }
-    f <- as.formula(paste(paste(colnames(train)[1], paste(colnames(train)[2:(ncol(train) - 1)],
-      collapse = " + "
-    ), sep = " ~ "),
-    colnames(train)[ncol(train)],
-    sep = " - "
-    ))
+    f <- as.formula(
+      paste(
+        paste(colnames(train)[1], paste(colnames(train)[2:(ncol(train) - 1)],
+          collapse = " + "
+        ), sep = " ~ "),
+        colnames(train)[ncol(train)],
+        sep = " - "
+      )
+    )
 
     train <- na.omit(train)
     model <- rbart_vi(f,

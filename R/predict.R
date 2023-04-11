@@ -26,9 +26,6 @@
 #' @export
 #'
 
-
-############################
-
 predict2.bart <- function(object,
                           x.layers,
                           quantiles = c(),
@@ -42,7 +39,13 @@ predict2.bart <- function(object,
       stop("ERROR: Input either a value or a raster in ri.data")
     }
     if (is.null(ri.name)) {
-      stop("ERROR: Input the correct random effect variable name in the model object in ri.name")
+      stop(
+        paste(
+          "ERROR: Input the correct random effect variable name in the model",
+          "object in ri.name",
+          collapse = " "
+        )
+      )
     }
   }
 

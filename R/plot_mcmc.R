@@ -88,7 +88,8 @@
 #'
 #'
 
-plot.mcmc <- function(object, inputstack, iter = 100, wait = 0.1, quiet = FALSE) {
+plot.mcmc <- function(object, inputstack, iter = 100,
+                      wait = 0.1, quiet = FALSE) {
   xnames <- attr(object$fit$data@x, "term.labels")
   if (all(xnames %in% names(inputstack))) {
     inputstack <- inputstack[[xnames]]

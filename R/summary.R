@@ -55,8 +55,16 @@ summary.bart <- function(object, plots = TRUE) {
   cat("Recommended threshold (maximizes true skill statistic)", "\n")
   cat("Cutoff = ", thresh, "\n")
   cat("TSS = ", tss.df[which(tss.df$alpha == thresh), "tss"], "\n")
-  cat("Resulting type I error rate: ", 1 - perf.tss@y.values[[1]][which(perf.tss@alpha.values[[1]] == thresh)], "\n") # Type I error rate
-  cat("Resulting type II error rate: ", 1 - perf.tss@x.values[[1]][which(perf.tss@alpha.values[[1]] == thresh)], "\n") # Type II error rate
+  cat(
+    "Resulting type I error rate: ",
+    1 - perf.tss@y.values[[1]][which(perf.tss@alpha.values[[1]] == thresh)],
+    "\n"
+  ) # Type I error rate
+  cat(
+    "Resulting type II error rate: ",
+    1 - perf.tss@x.values[[1]][which(perf.tss@alpha.values[[1]] == thresh)],
+    "\n"
+  ) # Type II error rate
 
   if (plots == TRUE) {
     x <- performance(pred, "tpr", "fpr")

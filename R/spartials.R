@@ -71,7 +71,10 @@ spartial <- function(model, envs, x.vars = NULL,
       )
     }
     lev <- lapply(c(1:nrow(minmax)), function(i) {
-      seq(minmax$mins[i], minmax$maxs[i], (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth))
+      seq(
+        minmax$mins[i], minmax$maxs[i],
+        (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth)
+      )
     })
 
     for (i in 1:length(lev)) {
@@ -103,7 +106,13 @@ spartial <- function(model, envs, x.vars = NULL,
     if (length(unique(pd$fit$data@x[, pd$xlbs[[i]]])) == 2) {
       # THIS INTERIOR IF IS FOR BINARY VARIABLES
 
-      print(paste("WARNING: ", " is a binary variable; the plot will look bad/be uninformative", sep = pd$xlbs[[i]]))
+      print(
+        paste(
+          "WARNING: ",
+          " is a binary variable; the plot will look bad/be uninformative",
+          sep = pd$xlbs[[i]]
+        )
+      )
       print()
       dfbin <- data.frame(pd$fd[[i]])
       colnames(dfbin) <- c(0, 1)

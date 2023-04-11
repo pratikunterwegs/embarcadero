@@ -36,11 +36,19 @@ varimp <- function(model, plots = FALSE) {
 
   var.df <- data.frame(names, varimps)
 
-  missing <- attr(fitobj$data@x, "term.labels")[!(attr(fitobj$data@x, "term.labels") %in%
-    names(unlist(attr(fitobj$data@x, "drop"))))]
+  missing <- attr(fitobj$data@x, "term.labels")[
+    !(attr(fitobj$data@x, "term.labels") %in%
+      names(unlist(attr(fitobj$data@x, "drop"))))
+  ]
 
   if (length(missing) > 0) {
-    message("dbarts auto-dropped this variable(s). You will probably want to remove it")
+    message(
+      paste(
+        "dbarts auto-dropped this variable(s).",
+        "You will probably want to remove it",
+        sep = " "
+      )
+    )
     message(paste(missing, collapse = " "), " \n")
   }
 
@@ -79,7 +87,8 @@ varimp <- function(model, plots = FALSE) {
       ) %>%
       transform(Var = reorder(key, mean)) %>%
       ggplot(aes(x = Var, y = mean)) +
-      geom_pointrange(aes(y = mean, x = Var, ymin = mean - sd, ymax = mean + sd),
+      geom_pointrange(
+        aes(y = mean, x = Var, ymin = mean - sd, ymax = mean + sd),
         color = "#00AFDD"
       ) +
       xlab(NULL) +

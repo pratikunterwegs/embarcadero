@@ -54,11 +54,27 @@
 #'
 #' partial(bartFit, x.vars = "hugh", trace = TRUE, ci = TRUE)
 #' partial(bartFit, x.vars = "hugh", equal = TRUE, trace = TRUE, ci = TRUE)
-#' partial(bartFit, x.vars = "hugh", equal = TRUE, smooth = 10, trace = TRUE, ci = TRUE)
+#' partial(
+#'   bartFit,
+#'   x.vars = "hugh", equal = TRUE,
+#'   smooth = 10, trace = TRUE, ci = TRUE
+#' )
 #'
-#' partial(bartFit, x.vars = "rob", equal = TRUE, smooth = 10, trace = FALSE, ci = TRUE)
-#' partial(bartFit, x.vars = "ed", equal = TRUE, smooth = 10, trace = TRUE, ci = FALSE)
-#' partial(bartFit, equal = TRUE, smooth = 10, trace = FALSE, ci = TRUE, panels = TRUE)
+#' partial(
+#'   bartFit,
+#'   x.vars = "rob", equal = TRUE, smooth = 10,
+#'   trace = FALSE, ci = TRUE
+#' )
+#' partial(
+#'   bartFit,
+#'   x.vars = "ed", equal = TRUE, smooth = 10,
+#'   trace = TRUE, ci = FALSE
+#' )
+#' partial(
+#'   bartFit,
+#'   equal = TRUE, smooth = 10, trace = FALSE,
+#'   ci = TRUE, panels = TRUE
+#' )
 #'
 #' @export
 #'
@@ -78,7 +94,8 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
     stop("Hey bud, you can't do several panels on only one variable!")
   }
 
-  # This is for something else ultimately: attr(bartFit$fit$data@x, "term.labels")
+  # This is for something else ultimately:
+  # attr(bartFit$fit$data@x, "term.labels")
   # This is where equal happens
 
 
@@ -108,7 +125,10 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
       )
     }
     lev <- lapply(c(1:nrow(minmax)), function(i) {
-      seq(minmax$mins[i], minmax$maxs[i], (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth))
+      seq(
+        minmax$mins[i], minmax$maxs[i],
+        (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth)
+      )
     })
 
     for (i in 1:length(lev)) {
@@ -224,7 +244,11 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
       }
 
       if (ci == TRUE) {
-        g <- g + geom_ribbon(aes(ymin = q05, ymax = q95), fill = "deepskyblue1", alpha = 0.3)
+        g <- g +
+          geom_ribbon(
+            aes(ymin = q05, ymax = q95),
+            fill = "deepskyblue1", alpha = 0.3
+          )
       }
 
       g <- g + geom_line(size = 1.25)

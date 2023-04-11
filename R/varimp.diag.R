@@ -19,7 +19,8 @@
 #' @aliases varimp.plot
 #'
 
-varimp.diag <- function(x.data, y.data, ri.data = NULL, iter = 50, quiet = FALSE) {
+varimp.diag <- function(x.data, y.data, ri.data = NULL,
+                        iter = 50, quiet = FALSE) {
   nvars <- ncol(x.data)
   varnums <- c(1:nvars)
   varlist <- colnames(x.data)
@@ -46,12 +47,17 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL, iter = 50, quiet = FALSE
   if (class(model.0) == "bart") {
     fitobj <- model.0$fit
   }
-  dropnames <- colnames(x.data)[!(colnames(x.data) %in% names(which(unlist(attr(fitobj$data@x, "drop")) == FALSE)))]
+  dropnames <- colnames(x.data)[
+    !(colnames(x.data) %in%
+      names(which(unlist(attr(fitobj$data@x, "drop")) == FALSE)))
+  ]
 
   if (length(dropnames) == 0) {} else {
     message("Some of your variables have been automatically dropped by dbarts.")
     message("(This could be because they're characters, homogenous, etc.)")
-    message("It is strongly recommended that you remove these from the raw data:")
+    message(
+      "It is strongly recommended that you remove these from the raw data:"
+    )
     message(paste(dropnames, collapse = " "), " \n")
   }
 

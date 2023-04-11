@@ -28,7 +28,8 @@
 #'
 #'
 
-variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10, iter = 50, quiet = FALSE) {
+variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
+                          iter = 50, quiet = FALSE) {
   quietly <- function(x) {
     sink(tempfile())
     on.exit(sink())
@@ -60,12 +61,15 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10, iter = 5
     fitobj <- model.0$fit
   }
 
-  dropnames <- colnames(x.data)[!(colnames(x.data) %in% names(which(unlist(attr(fitobj$data@x, "drop")) == FALSE)))]
+  dropnames <- colnames(x.data)[!(colnames(x.data) %in%
+    names(which(unlist(attr(fitobj$data@x, "drop")) == FALSE)))]
 
   if (length(dropnames) > 0) {
     message("Some of your variables have been automatically dropped by dbarts.")
     message("(This could be because they're characters, homogenous, etc.)")
-    message("It is strongly recommended that you remove these from the raw data:")
+    message(
+      "It is strongly recommended that you remove these from the raw data:"
+    )
     message(paste(dropnames, collapse = " "), " \n")
   }
 
@@ -157,7 +161,8 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10, iter = 5
 
   print(noquote("---------------------------------------"))
   print(noquote("Final recommended variable list"))
-  varlist.final <- varlist.orig[!(varlist.orig %in% dropped.varlist[0:(which(rmses$RMSE == min(rmses$RMSE)) - 1)])]
+  varlist.final <- varlist.orig[!(varlist.orig %in%
+    dropped.varlist[0:(which(rmses$RMSE == min(rmses$RMSE)) - 1)])]
   print(noquote(varlist.final))
   invisible(varlist.final)
 }

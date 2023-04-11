@@ -105,7 +105,10 @@ multipartial <- function(modl, spnames, x.vars = NULL,
       )
     }
     lev <- lapply(c(1:nrow(minmax)), function(i) {
-      seq(minmax$mins[i], minmax$maxs[i], (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth))
+      seq(
+        minmax$mins[i], minmax$maxs[i],
+        (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth)
+      )
     })
 
     for (i in 1:length(lev)) {
@@ -180,7 +183,8 @@ multipartial <- function(modl, spnames, x.vars = NULL,
     if (trace == TRUE) {
       if (transform == TRUE) {
         for (j in 3:ncol(df)) {
-          g <- g + geom_line(aes_string(y = pnorm(pull(df[, j]))), alpha = 0.025)
+          g <- g +
+            geom_line(aes_string(y = pnorm(pull(df[, j]))), alpha = 0.025)
         }
       } else {
         for (j in 3:ncol(df)) {
