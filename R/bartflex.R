@@ -2,7 +2,9 @@
 #'
 #' @description
 #'
-#' A little internal piece of code that allows you to easily drop random intercepts in. It's a convenience tool I don't suggest using - it's a shortcut for if you feel very comfortable with the pipeline.
+#' A little internal piece of code that allows you to easily drop random
+#' intercepts in. It's a convenience tool I don't suggest using - it's a
+#' shortcut for if you feel very comfortable with the pipeline.
 #'
 #' @param x.data A data frame of covariates
 #' @param y.data A vector of outcomes (1/0)

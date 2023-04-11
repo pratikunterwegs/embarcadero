@@ -2,16 +2,27 @@
 #'
 #' @description
 #'
-#' The automated stepwise variable set reduction algorithm. It starts with the full variable set, runs a given number of models (iter) with a given number of trees (n.trees), and eliminates the variable with the lowest importance. It does this until there are only three left, and charts the RMSE of each model. Then it finally recommends the model with the lowest RMSE.
+#' The automated stepwise variable set reduction algorithm. It starts with the
+#' full variable set, runs a given number of models (`iter`) with a given number
+#' of trees (`n.trees`), and eliminates the variable with the lowest importance.
+#' It does this until there are only three left, and charts the RMSE of each
+#' model. Then it finally recommends the model with the lowest RMSE.
 #'
-#' This is probably mostly useful as an internal part of bart.var, but if you *just* wanted to pull out which variables mattered and not the actual models, you could use this function to do so.
+#' This is probably mostly useful as an internal part of bart.var, but if you
+#' *just* wanted to pull out which variables mattered and not the actual models,
+#' you could use this function to do so.
 #'
 #' @param x.data A data frame of covariates
 #' @param y.data A vector of outcomes (1/0)
-#' @param n.trees How many trees to use in the variable set reduction. Should be a SMALL number (10 or 20 trees) in order to create the maximum disparity in variable importance between informative and uninformative predictors (recommendations taken from Chipman et al. 2010).
-#' @param iter How many BART models to run for each iteration of the stepwise reduction
+#' @param n.trees How many trees to use in the variable set reduction.
+#' Should be a SMALL number (10 or 20 trees) in order to create the maximum
+#' disparity in variable importance between informative and uninformative
+#' predictors (recommendations taken from Chipman et al. 2010).
+#' @param iter How many BART models to run for each iteration of the
+#' stepwise reduction
 #'
-#' @return Returns a list of the best variable set, and does a diagnostic plot showing the RMSE for each model with a given number of variable drops.
+#' @return Returns a list of the best variable set, and does a diagnostic plot
+#' showing the RMSE for each model with a given number of variable drops.
 #'
 #' @export
 #'

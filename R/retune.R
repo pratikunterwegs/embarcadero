@@ -2,7 +2,9 @@
 #'
 #' @description
 #'
-#' STILL IN DEVELOPMENT. New function to automate a little tuning of priors. Currently doesn't let you set the levels. Model goes in, model comes back out with slightly different priors.
+#' STILL IN DEVELOPMENT. New function to automate a little tuning of priors.
+#' Currently doesn't let you set the levels. Model goes in, model comes back out
+#' with slightly different priors.
 #'
 #' @param object A classic BART model (not rbart) from the dbarts package
 #' @param reps How many tries with each parameter combination

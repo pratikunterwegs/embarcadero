@@ -2,15 +2,22 @@
 #'
 #' @description
 #'
-#' Project partial dependence surfaces in the real, geography-having world: see the spatial signal of any given variable's contribution to the model predictions.
+#' Project partial dependence surfaces in the real, geography-having world: see
+#' the spatial signal of any given variable's contribution to the model
+#' predictions.
 #'
 #' @param model A dbarts model object
-#' @param envs The rasterStack of environmental variables, OR (this is new functionality and mostly untested, but important if you're doing tSDMs) a list of rasterstacks (e.g., climate layers by year). If it's a list, this will return a rasterstack of spartials ordered by that list, then by variable (e.g., x1-stack1, x1-stack2, x2-stack1, x2-stack2)
+#' @param envs The rasterStack of environmental variables, OR
+#' (this is new functionality and mostly untested, but important if you're doing
+#' tSDMs) a list of rasterstacks (e.g., climate layers by year).
+#' If it's a list, this will return a rasterstack of spartials ordered by that
+#' list, then by variable (e.g., x1-stack1, x1-stack2, x2-stack1, x2-stack2)
 #' @param x.vars The particular x variables you want to map
 #' @param equal Equal spacing on x breaks (versus quantiles).
 #' @param smooth Smoothing factor for the x breaks (works like partials).
 #' @param transform Backtransform the pnorm or not
-#' @param save Turn this on if you want to save the outputs as a RasterStack, for nicer use/plotting elsewhere.
+#' @param save Turn this on if you want to save the outputs as a RasterStack,
+#' for nicer use/plotting elsewhere.
 #'
 #' @return Returns a nice plot
 #'
