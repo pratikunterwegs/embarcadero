@@ -1,5 +1,9 @@
 # 🌲🌉 Species distribution models with BART 🌉 🌲
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/{{ gh_repo }}/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/{{ gh_repo }}/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 Colin J. Carlson (Georgetown University)
 
 *Last updated February 2020*
