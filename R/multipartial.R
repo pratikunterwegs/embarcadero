@@ -104,14 +104,14 @@ multipartial <- function(modl, spnames, x.vars = NULL,
         maxs = apply(raw, 2, max)
       )
     }
-    lev <- lapply(c(1:nrow(minmax)), function(i) {
+    lev <- lapply(seq_len(nrow(minmax)), function(i) {
       seq(
         minmax$mins[i], minmax$maxs[i],
         (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth)
       )
     })
 
-    for (i in 1:length(lev)) {
+    for (i in seq_along(lev)) {
       if (length(lev) == 1) {
         if (length(unique(raw)) == 2) {
           lev[[i]] <- unique(raw)
@@ -133,8 +133,8 @@ multipartial <- function(modl, spnames, x.vars = NULL,
 
   plots <- list()
 
-  for (i in 1:length(pdl[[1]]$fd)) {
-    for (j in 1:length(pdl)) {
+  for (i in seq_along(pdl[[1]]$fd)) {
+    for (j in seq_along(pdl)) {
       q50f <- function(x) {
         apply(x$fd[[i]], 2, median)
       }
@@ -143,25 +143,25 @@ multipartial <- function(modl, spnames, x.vars = NULL,
       if (transform == TRUE) {
         q50 <- apply(q50, 2, pnorm)
       }
-      q50 %>%
+      df <- q50 %>%
         as_tibble() %>%
-        mutate(x = pdl[[1]]$levs[[i]]) -> df
+        mutate(x = pdl[[1]]$levs[[i]])
     }
 
-    df %>%
+    df <- df %>%
       pivot_longer(-x) %>%
-      rename(Species = name) -> df
+      rename(Species = name)
 
     if (trace == TRUE) {
       ff <- function(x) {
         data.frame(t(x$fd[[i]]))
       }
       f <- lapply(pdl, ff)
-      traces <- lapply(c(1:length(pdl)), function(k) {
-        colnames(f[[k]]) <- gsub("X", "iter", colnames(f[[k]]))
-        df %>%
+      traces <- lapply(seq_along(pdl), function(k) {
+        colnames(f[[k]]) <- gsub("X", "iter", colnames(f[[k]]), fixed = TRUE)
+        x.i <- df %>%
           filter(Species == spnames[k]) %>%
-          pull(x) -> x.i
+          pull(x)
         f[[k]]$x <- x.i
         f[[k]]$Species <- spnames[k]
         f[[k]]

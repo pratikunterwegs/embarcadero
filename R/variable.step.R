@@ -54,10 +54,10 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
     n.trees = 200
   ))
 
-  if (class(model.0) == "rbart") {
+  if (inherits(model.0, "rbart")) {
     fitobj <- model.0$fit[[1]]
   }
-  if (class(model.0) == "bart") {
+  if (inherits(model.0, "bart")) {
     fitobj <- model.0$fit
   }
 
@@ -73,18 +73,18 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
     message(paste(dropnames, collapse = " "), " \n")
   }
 
-  x.data %>% dplyr::select(-any_of(dropnames)) -> x.data
+  x.data <- x.data %>% dplyr::select(-any_of(dropnames))
 
   ###############
 
   nvars <- ncol(x.data)
-  varnums <- c(1:nvars)
+  varnums <- seq_len(nvars)
   varlist.orig <- varlist <- colnames(x.data)
 
-  rmses <- data.frame(Variable.number = c(), RMSE = c())
-  dropped.varlist <- c()
+  rmses <- data.frame(Variable.number = numeric(), RMSE = numeric())
+  dropped.varlist <- numeric()
 
-  for (var.j in c(nvars:3)) {
+  for (var.j in seq(nvars, 3)) {
     print(noquote(paste("Number of variables included:", var.j)))
     print(noquote("Dropped:"))
     print(if (length(dropped.varlist) == 0) {
@@ -93,7 +93,7 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
       noquote(dropped.varlist)
     })
 
-    rmse.list <- c()
+    rmse.list <- numeric()
 
     if (!quiet) {
       pb <- txtProgressBar(min = 0, max = iter, style = 3)
@@ -156,7 +156,7 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
       axis.text = element_text(size = 12),
       axis.title = element_text(size = 14, face = "bold")
     ) +
-    scale_x_discrete(limits = c(0:(nrow(rmses))))
+    scale_x_discrete(limits = seq(0, (nrow(rmses))))
   print(g1)
 
   print(noquote("---------------------------------------"))

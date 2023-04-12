@@ -25,10 +25,10 @@
 #'
 
 summary.bart <- function(object, plots = TRUE) {
-  if (class(object) == "bart") {
+  if (inherits(object, "bart")) {
     fitobj <- object$fit
   } else
-  if (class(object) == "rbart") {
+  if (inherits(object, "rbart")) {
     fitobj <- object$fit[[1]]
   }
 

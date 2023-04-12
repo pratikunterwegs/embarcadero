@@ -125,8 +125,8 @@ plot.mcmc <- function(object, inputstack, iter = 100,
     }
     par(mfrow = c(1, 2))
     par(mar = c(2, 1, 2, 5))
-    plot(r, box = F, axes = F, zlim = c(0, 1), main = paste("Iter", i))
-    plot(r1 / i, box = F, axes = F, zlim = c(0, 1), main = "Mean")
+    plot(r, box = FALSE, axes = FALSE, zlim = c(0, 1), main = paste("Iter", i))
+    plot(r1 / i, box = FALSE, axes = FALSE, zlim = c(0, 1), main = "Mean")
     Sys.sleep(0.1)
     if (!quiet) {
       setTxtProgressBar(pb, i)

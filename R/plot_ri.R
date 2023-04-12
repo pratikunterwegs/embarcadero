@@ -15,7 +15,7 @@
 #'
 plot.ri <- function(model, temporal = TRUE) {
   if (temporal == TRUE) {
-    model$ranef %>%
+    df <- model$ranef %>%
       as_tibble() %>%
       gather() %>%
       group_by(key) %>%
@@ -24,9 +24,9 @@ plot.ri <- function(model, temporal = TRUE) {
         upper = quantile(value, 0.975, na.rm = TRUE),
         lower = quantile(value, 0.025, na.rm = TRUE)
       ) %>%
-      mutate(key = as.numeric(key)) -> df
+      mutate(key = as.numeric(key))
 
-    df %>% ggplot(aes(x = key, y = mean, ymin = lower, ymax = upper)) +
+    p <- ggplot(df, aes(x = key, y = mean, ymin = lower, ymax = upper)) +
       geom_ribbon(fill = "grey95") +
       geom_line(y = 0, lty = 2, col = "grey20") +
       geom_line(color = "#00AFDD", lwd = 1.35) +
@@ -41,9 +41,9 @@ plot.ri <- function(model, temporal = TRUE) {
         axis.text.y = element_text(size = rel(1.4)),
         plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"),
         panel.grid.minor = element_blank()
-      ) -> p
+      )
   } else {
-    model$ranef %>%
+    p <- model$ranef %>%
       data.frame() %>%
       gather() %>%
       group_by(key) %>%
@@ -51,9 +51,11 @@ plot.ri <- function(model, temporal = TRUE) {
         mean = mean(value),
         upper = quantile(value, 0.975, na.rm = TRUE),
         lower = quantile(value, 0.025, na.rm = TRUE)
-      ) %>%
-      # transform(key = reorder(key, mean)) %>%
-      ggplot(aes(x = key, y = mean)) +
+      )
+
+    # transform(key = reorder(key, mean)) %>%
+    p <-
+      ggplot(p, aes(x = key, y = mean)) +
       geom_pointrange(aes(y = mean, x = key, ymin = lower, ymax = upper),
         color = "#00AFDD"
       ) +
@@ -73,7 +75,7 @@ plot.ri <- function(model, temporal = TRUE) {
           color = "grey",
           linetype = "dashed"
         )
-      ) -> p
+      )
   }
   print(p)
 }

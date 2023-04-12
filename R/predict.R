@@ -28,13 +28,13 @@
 
 predict2.bart <- function(object,
                           x.layers,
-                          quantiles = c(),
+                          quantiles = numeric(),
                           ri.data = NULL,
                           ri.name = NULL,
                           ri.pred = FALSE,
                           splitby = 1,
                           quiet = FALSE) {
-  if (class(object) == "rbart") {
+  if (inherits(object, "rbart")) {
     if (is.null(ri.data)) {
       stop("ERROR: Input either a value or a raster in ri.data")
     }
@@ -49,7 +49,7 @@ predict2.bart <- function(object,
     }
   }
 
-  if (class(object) == "rbart") {
+  if (inherits(object, "rbart")) {
     xnames <- attr(object$fit[[1]]$data@x, "term.labels")
     if (all(xnames %in% c(names(x.layers), ri.name))) {
       x.layers <- x.layers[[xnames[!(xnames == ri.name)]]]
@@ -57,7 +57,7 @@ predict2.bart <- function(object,
       stop("Variable names of RasterStack don't match the requested names")
     }
   }
-  if (class(object) == "bart") {
+  if (inherits(object, "bart")) {
     xnames <- attr(object$fit$data@x, "term.labels")
     if (all(xnames %in% names(x.layers))) {
       x.layers <- x.layers[[xnames]]
@@ -74,8 +74,8 @@ predict2.bart <- function(object,
   whichvals <- which(complete.cases(input.matrix))
   input.matrix <- input.matrix[complete.cases(input.matrix), ]
 
-  if (class(object) == "rbart") {
-    if (class(ri.data) == "RasterLayer") {
+  if (inherits(object, "rbart")) {
+    if (inherits(ri.data, "RasterLayer")) {
       input.matrix <- cbind(input.matrix, values(ri.data))
     } else {
       input.matrix <- cbind(input.matrix, rep(ri.data, nrow(input.matrix)))
@@ -84,9 +84,9 @@ predict2.bart <- function(object,
   }
 
   if (splitby == 1) {
-    if (class(object) == "bart") {
+    if (inherits(object, "bart")) {
       pred <- dbarts:::predict.bart(object, input.matrix)
-    } else if (class(object) == "rbart") {
+    } else if (inherits(object, "rbart")) {
       if (ri.pred == FALSE) {
         pred <- dbarts:::predict.rbart(object,
           input.matrix[, !(colnames(input.matrix) == ri.name)],
@@ -105,15 +105,18 @@ predict2.bart <- function(object,
   } else {
     split <- floor(nrow(input.matrix) / splitby)
     input.df <- data.frame(input.matrix)
-    input.str <- split(input.df, (as.numeric(1:nrow(input.df)) - 1) %/% split)
-    for (i in 1:length(input.str)) {
+    input.str <- split(
+      input.df,
+      (as.numeric(seq_len(nrow(input.df))) - 1) %/% split
+    )
+    for (i in seq_along(input.str)) {
       if (i == 1) {
         start_time <- Sys.time()
       }
 
-      if (class(object) == "bart") {
+      if (inherits(object, "bart")) {
         pred <- dbarts:::predict.bart(object, input.str[[i]])
-      } else if (class(object) == "rbart") {
+      } else if (inherits(object, "rbart")) {
         if (ri.pred == FALSE) {
           pred <- dbarts:::predict.rbart(object,
             input.str[[i]][, !(colnames(input.str[[i]]) == ri.name)],
@@ -150,7 +153,7 @@ predict2.bart <- function(object,
     }
   }
 
-  if (class(object) == "rbart") {
+  if (inherits(object, "rbart")) {
     output <- pnorm(as.matrix(pred.summary))
   } else {
     output <- as.matrix(pred.summary)
@@ -159,7 +162,7 @@ predict2.bart <- function(object,
   blankout[whichvals, ] <- output
   output <- blankout
 
-  outlist <- lapply(1:ncol(output), function(x) {
+  outlist <- lapply(seq_along(output), function(x) {
     output.m <- t(matrix(output[, x],
       nrow = ncol(x.layers),
       ncol = nrow(x.layers)

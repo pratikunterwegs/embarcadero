@@ -70,14 +70,14 @@ spartial <- function(model, envs, x.vars = NULL,
         maxs = apply(raw, 2, max)
       )
     }
-    lev <- lapply(c(1:nrow(minmax)), function(i) {
+    lev <- lapply(seq_len(nrow(minmax)), function(i) {
       seq(
         minmax$mins[i], minmax$maxs[i],
         (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth)
       )
     })
 
-    for (i in 1:length(lev)) {
+    for (i in seq_along(lev)) {
       if (length(lev) == 1) {
         if (length(unique(raw)) == 2) {
           lev[[i]] <- unique(raw)
@@ -100,7 +100,7 @@ spartial <- function(model, envs, x.vars = NULL,
 
   plots <- list()
 
-  for (i in 1:length(pd$fd)) {
+  for (i in seq_along(pd$fd)) {
     envi <- envs[[pd$xlbs[[i]]]]
 
     if (length(unique(pd$fit$data@x[, pd$xlbs[[i]]])) == 2) {
@@ -109,7 +109,7 @@ spartial <- function(model, envs, x.vars = NULL,
       print(
         paste(
           "WARNING: ",
-          " is a binary variable; the plot will look bad/be uninformative",
+          " is a binary variable; the plot will look bad or be uninformative",
           sep = pd$xlbs[[i]]
         )
       )
@@ -122,17 +122,17 @@ spartial <- function(model, envs, x.vars = NULL,
         dfbin$value <- pnorm(dfbin$value)
       }
 
-      dfbin %>%
+      df_bin <- dfbin %>%
         group_by(variable) %>%
         summarize(value = median(value)) %>%
-        data.frame() -> dfbin
+        data.frame()
       colnames(dfbin) <- c("is", "becomes")
       dfbin$is <- as.numeric(as.character(dfbin$is))
 
-      if (class(envs) %in% c("RasterStack", "RasterBrick")) {
+      if (inherits(envs, c("RasterStack", "RasterBrick"))) {
         lyrtmp <- envs[[pd$xlbs[[i]]]]
         lyrtr <- raster::reclassify(lyrtmp, as.matrix(dfbin))
-      } else if (class(envs) == "list") {
+      } else if (is.list(envs)) {
         lyrtr <- lapply(envs, function(x) {
           lyrtmp <- x[[pd$xlbs[[i]]]]
           return(raster::reclassify(lyrtmp, as.matrix(dfbin)))
@@ -159,7 +159,7 @@ spartial <- function(model, envs, x.vars = NULL,
       nmax <- length(df$x)
       xmeds <- (df$x[2:nmax] - df$x[1:(nmax - 1)]) / 2 + df$x[1:(nmax - 1)]
 
-      if (class(envs) %in% c("RasterStack", "RasterBrick")) {
+      if (inherits(envs, c("RasterStack", "RasterBrick"))) {
         lyrtmp <- envs[[pd$xlbs[[i]]]]
         xmat <- data.frame(
           from = c(min(cellStats(lyrtmp, min), min(df$x)), xmeds),
@@ -169,7 +169,7 @@ spartial <- function(model, envs, x.vars = NULL,
         lyrtr <- raster::reclassify(lyrtmp, xmat,
           include.lowest = TRUE
         )
-      } else if (class(envs) == "list") {
+      } else if (is.list(envs)) {
         lyrtr <- lapply(envs, function(x) {
           lyrtmp <- x[[pd$xlbs[[i]]]]
           xmat <- data.frame(

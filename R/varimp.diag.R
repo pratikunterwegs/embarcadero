@@ -22,7 +22,7 @@
 varimp.diag <- function(x.data, y.data, ri.data = NULL,
                         iter = 50, quiet = FALSE) {
   nvars <- ncol(x.data)
-  varnums <- c(1:nvars)
+  varnums <- seq_len(nvars)
   varlist <- colnames(x.data)
 
   quietly <- function(x) {
@@ -41,10 +41,10 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
     n.trees = 200
   ))
 
-  if (class(model.0) == "rbart") {
+  if (inherits(model.0, "rbart")) {
     fitobj <- model.0$fit[[1]]
   }
-  if (class(model.0) == "bart") {
+  if (inherits(model.0, "bart")) {
     fitobj <- model.0$fit
   }
   dropnames <- colnames(x.data)[
@@ -52,7 +52,9 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
       names(which(unlist(attr(fitobj$data@x, "drop")) == FALSE)))
   ]
 
-  if (length(dropnames) == 0) {} else {
+  if (length(dropnames) == 0) {
+
+  } else {
     message("Some of your variables have been automatically dropped by dbarts.")
     message("(This could be because they're characters, homogenous, etc.)")
     message(
@@ -61,7 +63,7 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
     message(paste(dropnames, collapse = " "), " \n")
   }
 
-  x.data %>% dplyr::select(-dropnames) -> x.data
+  x.data <- x.data %>% dplyr::select(-dropnames)
 
   ###############
 
@@ -104,9 +106,9 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
   vi <- reshape::melt(vi, "variable")
   colnames(vi) <- c("variable", "trees", "imp")
 
-  vi %>%
+  vi.fac <- vi %>%
     group_by(variable) %>%
-    summarise(max = max(imp)) -> vi.fac
+    summarise(max = max(imp))
   vi.fac <- vi.fac[order(-vi.fac$max), ]
 
   vi$names <- factor(vi$variable, levels = vi.fac$variable)

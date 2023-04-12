@@ -99,10 +99,10 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
   # This is where equal happens
 
 
-  if (class(model) == "rbart") {
+  if (inherits(model, "rbart")) {
     fitobj <- model$fit[[1]]
   }
-  if (class(model) == "bart") {
+  if (inherits(model, "bart")) {
     fitobj <- model$fit
   }
 
@@ -124,14 +124,14 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
         maxs = apply(raw, 2, max)
       )
     }
-    lev <- lapply(c(1:nrow(minmax)), function(i) {
+    lev <- lapply(seq_len(nrow(minmax)), function(i) {
       seq(
         minmax$mins[i], minmax$maxs[i],
         (minmax$maxs[i] - minmax$mins[i]) / (10 * smooth)
       )
     })
 
-    for (i in 1:length(lev)) {
+    for (i in seq_along(lev)) {
       if (length(lev) == 1) {
         if (length(unique(raw)) == 2) {
           lev[[i]] <- unique(raw)
@@ -154,7 +154,7 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
 
   plots <- list()
 
-  for (i in 1:length(pd$fd)) {
+  for (i in seq_along(pd$fd)) {
     if (length(unique(pd$fit$data@x[, pd$xlbs[[i]]])) == 2) {
       dfbin <- data.frame(pd$fd[[i]])
       colnames(dfbin) <- c(0, 1)
@@ -233,11 +233,12 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
       }
       if (trace == TRUE) {
         if (transform == TRUE) {
-          for (j in 1:nrow(pd$fd[[i]])) {
-            g <- g + geom_line(aes_string(y = pnorm(df[, j + k])), alpha = alpha2)
+          for (j in seq_len(nrow(pd$fd[[i]]))) {
+            g <- g +
+              geom_line(aes_string(y = pnorm(df[, j + k])), alpha = alpha2)
           }
         } else {
-          for (j in 1:nrow(pd$fd[[i]])) {
+          for (j in seq_len(nrow(pd$fd[[i]]))) {
             g <- g + geom_line(aes_string(y = df[, j + k]), alpha = alpha2)
           }
         }

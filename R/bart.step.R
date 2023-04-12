@@ -53,10 +53,10 @@ bart.step <- function(x.data, y.data, ri.data = NULL,
     n.trees = 200
   ))
 
-  if (class(model.0) == "rbart") {
+  if (inherits(model.0, "rbart")) {
     fitobj <- model.0$fit[[1]]
   }
-  if (class(model.0) == "bart") {
+  if (inherits(model.0, "bart")) {
     fitobj <- model.0$fit
   }
 
@@ -75,7 +75,7 @@ bart.step <- function(x.data, y.data, ri.data = NULL,
     message(paste(dropnames, collapse = " "), " \n")
   }
 
-  x.data %>% dplyr::select(-dropnames) -> x.data
+  x.data <- x.data %>% dplyr::select(-dropnames)
 
   ###############
 

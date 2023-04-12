@@ -21,13 +21,13 @@ varimp <- function(model, plots = FALSE) {
   if (!("fit" %in% names(model))) {
     stop("Please add \", keeptrees=TRUE\" to your dbarts model call")
   }
-  if (class(model) == "rbart") {
+  if (inherits(model, "rbart")) {
     basenames <- unlist(attr(model$fit[[1]]$data@x, "drop"))
     names <- names(which(basenames == FALSE))
     varimps <- rowMeans(model$varcount / colSums(model$varcount))
     fitobj <- model$fit[[1]]
   }
-  if (class(model) == "bart") {
+  if (inherits(model, "bart")) {
     basenames <- unlist(attr(model$fit$data@x, "drop"))
     names <- names(which(basenames == FALSE))
     varimps <- colMeans(model$varcount / rowSums(model$varcount))
@@ -43,11 +43,8 @@ varimp <- function(model, plots = FALSE) {
 
   if (length(missing) > 0) {
     message(
-      paste(
-        "dbarts auto-dropped this variable(s).",
-        "You will probably want to remove it",
-        sep = " "
-      )
+      "dbarts auto-dropped this variable(s). ",
+      " You will probably want to remove it"
     )
     message(paste(missing, collapse = " "), " \n")
   }
@@ -70,14 +67,14 @@ varimp <- function(model, plots = FALSE) {
     #  ylab("Relative importance") + theme_bluewhite()
     # print(g1)
 
-    if (class(model) == "rbart") {
+    if (inherits(model, "rbart")) {
       rel <- t(model$varcount / colSums(model$varcount))
     } else {
       rel <- model$varcount / rowSums(model$varcount)
     }
     colnames(rel) <- names
 
-    rel %>%
+    p <- rel %>%
       data.frame() %>%
       gather() %>%
       group_by(key) %>%
@@ -85,8 +82,9 @@ varimp <- function(model, plots = FALSE) {
         mean = mean(value),
         sd = sd(value, na.rm = TRUE)
       ) %>%
-      transform(Var = reorder(key, mean)) %>%
-      ggplot(aes(x = Var, y = mean)) +
+      transform(Var = reorder(key, mean))
+
+    p <- ggplot(p, aes(x = Var, y = mean)) +
       geom_pointrange(
         aes(y = mean, x = Var, ymin = mean - sd, ymax = mean + sd),
         color = "#00AFDD"
@@ -105,7 +103,7 @@ varimp <- function(model, plots = FALSE) {
           color = "grey",
           linetype = "dashed"
         )
-      ) -> p
+      )
 
     print(p)
   }
