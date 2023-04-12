@@ -18,15 +18,26 @@ variable.step(
 
 \item{y.data}{A vector of outcomes (1/0)}
 
-\item{n.trees}{How many trees to use in the variable set reduction. Should be a SMALL number (10 or 20 trees) in order to create the maximum disparity in variable importance between informative and uninformative predictors (recommendations taken from Chipman et al. 2010).}
+\item{n.trees}{How many trees to use in the variable set reduction.
+Should be a SMALL number (10 or 20 trees) in order to create the maximum
+disparity in variable importance between informative and uninformative
+predictors (recommendations taken from Chipman et al. 2010).}
 
-\item{iter}{How many BART models to run for each iteration of the stepwise reduction}
+\item{iter}{How many BART models to run for each iteration of the
+stepwise reduction}
 }
 \value{
-Returns a list of the best variable set, and does a diagnostic plot showing the RMSE for each model with a given number of variable drops.
+Returns a list of the best variable set, and does a diagnostic plot
+showing the RMSE for each model with a given number of variable drops.
 }
 \description{
-The automated stepwise variable set reduction algorithm. It starts with the full variable set, runs a given number of models (iter) with a given number of trees (n.trees), and eliminates the variable with the lowest importance. It does this until there are only three left, and charts the RMSE of each model. Then it finally recommends the model with the lowest RMSE.
+The automated stepwise variable set reduction algorithm. It starts with the
+full variable set, runs a given number of models (`iter`) with a given number
+of trees (`n.trees`), and eliminates the variable with the lowest importance.
+It does this until there are only three left, and charts the RMSE of each
+model. Then it finally recommends the model with the lowest RMSE.
 
-This is probably mostly useful as an internal part of bart.var, but if you *just* wanted to pull out which variables mattered and not the actual models, you could use this function to do so.
+This is probably mostly useful as an internal part of bart.var, but if you
+*just* wanted to pull out which variables mattered and not the actual models,
+you could use this function to do so.
 }

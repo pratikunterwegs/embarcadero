@@ -17,7 +17,11 @@ spartial(
 \arguments{
 \item{model}{A dbarts model object}
 
-\item{envs}{The rasterStack of environmental variables, OR (this is new functionality and mostly untested, but important if you're doing tSDMs) a list of rasterstacks (e.g., climate layers by year). If it's a list, this will return a rasterstack of spartials ordered by that list, then by variable (e.g., x1-stack1, x1-stack2, x2-stack1, x2-stack2)}
+\item{envs}{The rasterStack of environmental variables, OR
+(this is new functionality and mostly untested, but important if you're doing
+tSDMs) a list of rasterstacks (e.g., climate layers by year).
+If it's a list, this will return a rasterstack of spartials ordered by that
+list, then by variable (e.g., x1-stack1, x1-stack2, x2-stack1, x2-stack2)}
 
 \item{x.vars}{The particular x variables you want to map}
 
@@ -27,30 +31,36 @@ spartial(
 
 \item{transform}{Backtransform the pnorm or not}
 
-\item{save}{Turn this on if you want to save the outputs as a RasterStack, for nicer use/plotting elsewhere.}
+\item{save}{Turn this on if you want to save the outputs as a RasterStack,
+for nicer use/plotting elsewhere.}
 }
 \value{
 Returns a nice plot
 }
 \description{
-Project partial dependence surfaces in the real, geography-having world: see the spatial signal of any given variable's contribution to the model predictions.
+Project partial dependence surfaces in the real, geography-having world: see
+the spatial signal of any given variable's contribution to the model
+predictions.
 }
 \examples{
 
 ### RUN THE VIGNETTE UP TO THE FIRST MODEL, FOR THESE TO WORK
-s1 <- spartial(sdm, 
-               climate,
-               x.vars = 'x1')
+s1 <- spartial(sdm,
+  climate,
+  x.vars = "x1"
+)
 plot(s1)
 
 s1 <- spartial(sdm,
-               list(climate, climate*0.9),
-               x.vars = 'x1')
+  list(climate, climate * 0.9),
+  x.vars = "x1"
+)
 plot(s1)
 
 s1 <- spartial(sdm,
-               list(climate, climate*0.9),
-               x.vars = c('x1','x2'))
+  list(climate, climate * 0.9),
+  x.vars = c("x1", "x2")
+)
 plot(s1)
 
 }

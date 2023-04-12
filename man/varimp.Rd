@@ -12,7 +12,10 @@ varimp(model, plots = FALSE)
 \item{plots}{Turn this on for a nice variable contribution plot}
 }
 \description{
-Variable importance, as measured in the proportion of total branches used for a given variable. Error bars show standard deviation across iterations.
+Variable importance, as measured in the proportion of total branches used
+for a given variable. Error bars show standard deviation across iterations.
 
-Variables that are explicitly dropped in the model are included as "0" in the variable importance table, but not plotted; variables that are included but used zero times are shown in both.
+Variables that are explicitly dropped in the model are included as "0" in
+the variable importance table, but not plotted; variables that are included
+but used zero times are shown in both.
 }

@@ -25,5 +25,7 @@ bart.flex(
 \item{ri.name}{Identify the name of the random intercept column}
 }
 \description{
-A little internal piece of code that allows you to easily drop random intercepts in. It's a convenience tool I don't suggest using - it's a shortcut for if you feel very comfortable with the pipeline.
+A little internal piece of code that allows you to easily drop random
+intercepts in. It's a convenience tool I don't suggest using - it's a
+shortcut for if you feel very comfortable with the pipeline.
 }
