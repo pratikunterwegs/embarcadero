@@ -8,10 +8,16 @@ Encoding: UTF-8
 LazyData: true
 Depends: raster, dbarts, Metrics, tidyverse, dismo, ROCR, patchwork,
         ggpubr, matrixStats, data.table
-RoxygenNote: 7.1.1
-Suggests: knitr, rmarkdown
+RoxygenNote: 7.1.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2020-03-02 16:39:49 UTC; cjcar
 Author: Colin Carlson [aut, cre]
 Maintainer: Colin Carlson <colin.carlson@georgetown.edu>
+Config/testthat/edition: 3
+Imports: 
+    magrittr
