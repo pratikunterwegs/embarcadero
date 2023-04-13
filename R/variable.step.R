@@ -96,7 +96,7 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
     rmse.list <- numeric()
 
     if (!quiet) {
-      pb <- txtProgressBar(min = 0, max = iter, style = 3)
+      pb <- utils::txtProgressBar(min = 0, max = iter, style = 3)
     }
     for (index in 1:iter) {
       quietly(model.j <- bart.flex(
@@ -112,8 +112,8 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
         vi.j.df[, index + 1] <- vi.j[, 2]
       }
 
-      pred.p <- colMeans(pnorm(model.j$yhat.train))[y.data == 1]
-      pred.a <- colMeans(pnorm(model.j$yhat.train))[y.data == 0]
+      pred.p <- colMeans(stats::pnorm(model.j$yhat.train))[y.data == 1]
+      pred.a <- colMeans(stats::pnorm(model.j$yhat.train))[y.data == 0]
       # e <- evaluate(p=pred.p,
       #              a=pred.a)
       # aucs <- rbind(aucs,c(var.j,e@auc)); colnames(aucs) <- c('Vars','AUC')
@@ -123,7 +123,7 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
       rmsej.i <- Metrics::rmse(true.c, pred.c)
       rmse.list <- c(rmse.list, rmsej.i)
       if (!quiet) {
-        setTxtProgressBar(pb, index)
+        utils::setTxtProgressBar(pb, index)
       }
     }
 
@@ -146,15 +146,15 @@ variable.step <- function(x.data, y.data, ri.data = NULL, n.trees = 10,
     print(noquote("---------------------------------------"))
   }
 
-  g1 <- ggplot2::ggplot(rmses, aes(y = RMSE, x = VarsDropped)) +
-    geom_line(color = "black") +
-    geom_point(size = 3) +
-    theme_bw() +
+  g1 <- ggplot2::ggplot(rmses, ggplot2::aes(y = RMSE, x = VarsDropped)) +
+    ggplot2::geom_line(color = "black") +
+    ggplot2::geom_point(size = 3) +
+    ggplot2::theme_bw() +
     ylab("RMSE of model\n") +
     xlab("\nVariables dropped") +
-    theme(
-      axis.text = element_text(size = 12),
-      axis.title = element_text(size = 14, face = "bold")
+    ggplot2::theme(
+      axis.text = ggplot2::element_text(size = 12),
+      axis.title = ggplot2::element_text(size = 14, face = "bold")
     ) +
     scale_x_discrete(limits = seq(0, (nrow(rmses))))
   print(g1)

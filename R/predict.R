@@ -66,7 +66,7 @@ predict2.bart <- function(object,
     }
   }
 
-  input.matrix <- as.matrix(raster::getValues(x.layers))
+  input.matrix <- as.matrix(raster::raster::getValues(x.layers))
   blankout <- data.frame(matrix(
     ncol = (1 + length(quantiles)),
     nrow = ncell(x.layers[[1]])
@@ -139,11 +139,11 @@ predict2.bart <- function(object,
         cat(length(input.str) * as.numeric(end_time - start_time) / 60)
         cat("\n")
         if (!quiet) {
-          pb <- txtProgressBar(min = 0, max = length(input.str), style = 3)
+          pb <- utils::txtProgressBar(min = 0, max = length(input.str), style = 3)
         }
       }
       if (!quiet) {
-        setTxtProgressBar(pb, i)
+        utils::setTxtProgressBar(pb, i)
       }
     }
     if (length(quantiles) == 0) {
@@ -154,7 +154,7 @@ predict2.bart <- function(object,
   }
 
   if (inherits(object, "rbart")) {
-    output <- pnorm(as.matrix(pred.summary))
+    output <- stats::pnorm(as.matrix(pred.summary))
   } else {
     output <- as.matrix(pred.summary)
   }
@@ -167,7 +167,7 @@ predict2.bart <- function(object,
       nrow = ncol(x.layers),
       ncol = nrow(x.layers)
     ))
-    return(raster(output.m,
+    return(raster::raster(output.m,
       xmn = xmin(x.layers[[1]]), xmx = xmax(x.layers[[1]]),
       ymn = ymin(x.layers[[1]]), ymx = ymax(x.layers[[1]]),
       crs = x.layers[[1]]@crs

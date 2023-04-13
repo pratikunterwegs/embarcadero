@@ -41,7 +41,7 @@ summary.bart <- function(object, plots = TRUE) {
 
   true.vector <- fitobj$data@y
 
-  pred <- prediction(colMeans(pnorm(object$yhat.train)), true.vector)
+  pred <- prediction(colMeans(stats::pnorm(object$yhat.train)), true.vector)
 
   perf.tss <- performance(pred, "sens", "spec")
   tss.list <- (perf.tss@x.values[[1]] + perf.tss@y.values[[1]] - 1)
@@ -72,50 +72,50 @@ summary.bart <- function(object, plots = TRUE) {
       fpr = x@x.values[[1]],
       tpr = x@y.values[[1]]
     )
-    g1 <- ggplot(rocdf, aes(x = fpr, y = tpr)) +
-      geom_line() +
+    g1 <- ggplot2::ggplot(rocdf, ggplot2::aes(x = fpr, y = tpr)) +
+      ggplot2::geom_line() +
       ggtitle("Receiver-operator curve") +
       xlab("False positive rate") +
       ylab("True positive rate") +
-      geom_abline(intercept = 0, slope = 1, col = "red") +
-      theme_classic()
+      ggplot2::geom_abline(intercept = 0, slope = 1, col = "red") +
+      ggplot2::theme_classic()
 
-    pnormdf <- data.frame(pnorm = colMeans(pnorm(object$yhat.train)))
-    g2 <- ggplot(pnormdf, aes(pnorm)) +
-      geom_histogram(stat = "bin", binwidth = 0.05) +
+    pnormdf <- data.frame(pnorm = colMeans(stats::pnorm(object$yhat.train)))
+    g2 <- ggplot2::ggplot(pnormdf, ggplot2::aes(pnorm)) +
+      ggplot2::geom_histogram(stat = "bin", binwidth = 0.05) +
       ylab("Number of training data points") +
       ggtitle("Fitted values") +
       xlab("Predicted probability") +
-      theme_classic()
+      ggplot2::theme_classic()
 
-    # hist(pnorm(object$yhat.train), xlab='Predicted y', main='Fitted values')
+    # hist(stats::pnorm(object$yhat.train), xlab='Predicted y', main='Fitted values')
 
-    g3 <- ggplot(tss.df, aes(x = alpha, y = tss)) +
-      geom_line() +
+    g3 <- ggplot2::ggplot(tss.df, ggplot2::aes(x = alpha, y = tss)) +
+      ggplot2::geom_line() +
       ggtitle("Threshold-performance curve") +
       xlab("Threshold") +
       ylab("True skill statistic") +
-      geom_vline(xintercept = thresh, col = "red") +
-      theme_classic()
+      ggplot2::geom_vline(xintercept = thresh, col = "red") +
+      ggplot2::theme_classic()
 
     obsf <- data.frame(
-      fitted = pnorm(colMeans(object$yhat.train)),
-      classified = as.numeric(pnorm(colMeans(object$yhat.train)) > thresh),
+      fitted = stats::pnorm(colMeans(object$yhat.train)),
+      classified = as.numeric(stats::pnorm(colMeans(object$yhat.train)) > thresh),
       observed = fitobj$data@y
     )
 
-    g4 <- ggplot(obsf, aes(
+    g4 <- ggplot2::ggplot(obsf, ggplot2::aes(
       x = fitted, y = factor(observed),
       fill = factor(classified), color = factor(classified)
     )) +
-      geom_jitter(height = 0.2, size = 0.9) +
+      ggplot2::geom_jitter(height = 0.2, size = 0.9) +
       xlab("Predicted probability") +
       ggtitle("Classified fitted values") +
       ylab("True classification") +
-      # labs(fill = "Thresholded", col='Thresholded') +
-      theme_classic() +
-      theme(legend.position = "none") +
-      geom_vline(xintercept = thresh, col = "black")
+      # ggplot2::labs(fill = "Thresholded", col='Thresholded') +
+      ggplot2::theme_classic() +
+      ggplot2::theme(legend.position = "none") +
+      ggplot2::geom_vline(xintercept = thresh, col = "black")
 
     g1 + g2 + g3 + g4 + plot_layout(ncol = 2)
   }

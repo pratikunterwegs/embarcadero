@@ -25,7 +25,7 @@ bart.flex <- function(x.data, y.data, ri.data = NULL,
       colnames(train)[1] <- y.name
     }
     train <- na.omit(train)
-    model <- bart(
+    model <- dbarts::bart(
       y.train = train[, 1],
       x.train = train[, 2:ncol(train)],
       ntree = n.trees, keeptrees = TRUE
@@ -49,7 +49,7 @@ bart.flex <- function(x.data, y.data, ri.data = NULL,
     )
 
     train <- na.omit(train)
-    model <- rbart_vi(f,
+    model <- dbarts::rbart_vi(f,
       group.by = train[, ncol(train)],
       data = train,
       n.samples = 1000,

@@ -48,7 +48,7 @@
 #' df <- data.frame(y, x)
 #' set.seed(99)
 #'
-#' bartFit <- bart(y ~ rob + hugh + ed + phil, df,
+#' bartFit <- dbarts::bart(y ~ rob + hugh + ed + phil, df,
 #'   keepevery = 10, ntree = 100, keeptrees = TRUE
 #' )
 #'
@@ -90,7 +90,7 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
     warning("You have chosen way, way too much smoothing... poorly")
   }
 
-  if (!is.null(x.vars) && length(x.vars) == 1 && panels == TRUE) {
+  if (!is.null(x.vars) && length(x.vars) == 1 && panels) {
     stop("Hey bud, you can't do several panels on only one variable!")
   }
 
@@ -112,7 +112,7 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
     raw <- fitobj$data@x[, x.vars]
   }
 
-  if (equal == TRUE) {
+  if (equal) {
     if (!is.null(x.vars) && length(x.vars) == 1) {
       minmax <- data.frame(
         mins = min(raw),
@@ -143,10 +143,10 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
       }
     }
 
-    pd <- pdbart(model, xind = x.vars, levs = lev, pl = FALSE)
+    pd <- dbarts::pdbart(model, xind = x.vars, levs = lev, pl = FALSE)
   } else {
     levq <- c(0.5 - ciwidth / 2, seq(0.1, 0.9, 0.1 / smooth), 0.5 + ciwidth / 2)
-    pd <- pdbart(model, xind = x.vars, levquants = levq, pl = FALSE)
+    pd <- dbarts::pdbart(model, xind = x.vars, levquants = levq, pl = FALSE)
   }
 
 
@@ -160,111 +160,130 @@ partial <- function(model, x.vars = NULL, equal = TRUE, smooth = 1,
       colnames(dfbin) <- c(0, 1)
       dfbin <- reshape2::melt(dfbin)
 
-      if (transform == TRUE) {
-        dfbin$value <- pnorm(dfbin$value)
+      if (transform) {
+        dfbin$value <- stats::pnorm(dfbin$value)
       }
 
       if (ci == FALSE) {
-        g <- ggplot(dfbin, aes(x = variable, y = value)) +
-          geom_boxplot() +
-          labs(title = pd$xlbs[[i]], y = "Response", x = "") +
-          theme_light(base_size = 20) +
-          theme(
-            plot.title = element_text(hjust = 0.5),
-            axis.title.y = element_text(vjust = 1.7)
+        g <- ggplot2::ggplot(dfbin, ggplot2::aes(x = variable, y = value)) +
+          ggplot2::geom_boxplot() +
+          ggplot2::labs(title = pd$xlbs[[i]], y = "Response", x = "") +
+          ggplot2::theme_light(base_size = 20) +
+          ggplot2::theme(
+            plot.title = ggplot2::element_text(hjust = 0.5),
+            axis.title.y = ggplot2::element_text(vjust = 1.7)
           )
       } else {
-        g <- ggplot(dfbin, aes(x = variable, y = value)) +
-          geom_boxplot(fill = "deepskyblue1") +
-          labs(title = pd$xlbs[[i]], y = "Response", x = "") +
-          theme_light(base_size = 20) +
-          theme(
-            plot.title = element_text(hjust = 0.5),
-            axis.title.y = element_text(vjust = 1.7)
+        g <- ggplot2::ggplot(dfbin, ggplot2::aes(x = variable, y = value)) +
+          ggplot2::geom_boxplot(fill = "deepskyblue1") +
+          ggplot2::labs(title = pd$xlbs[[i]], y = "Response", x = "") +
+          ggplot2::theme_light(base_size = 20) +
+          ggplot2::theme(
+            plot.title = ggplot2::element_text(hjust = 0.5),
+            axis.title.y = ggplot2::element_text(vjust = 1.7)
           )
       }
 
       if (panels == FALSE) {
-        g <- g + theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))
+        g <- g +
+          ggplot2::theme(
+            plot.margin = ggplot2::unit(c(0.5, 0.5, 0.5, 0.5), "cm")
+          )
       } else {
-        g <- g + theme(plot.margin = unit(c(0.15, 0.15, 0.15, 0.15), "cm"))
+        g <- g +
+          ggplot2::theme(
+            plot.margin = ggplot2::unit(c(0.15, 0.15, 0.15, 0.15), "cm")
+          )
       }
       plots[[i]] <- g
     } else {
       q50 <- apply(pd$fd[[i]], 2, median)
-      if (transform == TRUE) {
-        q50 <- pnorm(q50)
+      if (transform) {
+        q50 <- stats::pnorm(q50)
       }
 
       df <- data.frame(x = pd$levs[[i]], med = q50)
 
-      if (ci == TRUE) {
+      if (ci) {
         q05 <- apply(pd$fd[[i]], 2, quantile, probs = 0.5 - ciwidth / 2)
-        if (transform == TRUE) {
-          q05 <- pnorm(q05)
+        if (transform) {
+          q05 <- stats::pnorm(q05)
         }
         q95 <- apply(pd$fd[[i]], 2, quantile, probs = 0.5 + ciwidth / 2)
-        if (transform == TRUE) {
-          q95 <- pnorm(q95)
+        if (transform) {
+          q95 <- stats::pnorm(q95)
         }
         df$q05 <- q05
         df$q95 <- q95
       }
 
-      if (trace == TRUE) {
+      if (trace) {
         f <- data.frame(t(pd$fd[[i]]))
         df <- cbind(df, f)
       }
 
-      g <- ggplot(df, aes(x = x, y = med)) +
-        labs(title = pd$xlbs[[i]], y = "Response", x = "") +
-        theme_light(base_size = 20) +
-        theme(
-          plot.title = element_text(hjust = 0.5),
-          axis.title.y = element_text(vjust = 1.7)
+      g <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = med)) +
+        ggplot2::labs(title = pd$xlbs[[i]], y = "Response", x = "") +
+        ggplot2::theme_light(base_size = 20) +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(hjust = 0.5),
+          axis.title.y = ggplot2::element_text(vjust = 1.7)
         )
 
-      if (ci == TRUE) {
+      if (ci) {
         alpha2 <- 0.05
         k <- 4
       } else {
         alpha2 <- 0.025 * (fitobj$control@n.trees / 200)
         k <- 2
       }
-      if (trace == TRUE) {
-        if (transform == TRUE) {
+      if (trace) {
+        if (transform) {
           for (j in seq_len(nrow(pd$fd[[i]]))) {
             g <- g +
-              geom_line(aes_string(y = pnorm(df[, j + k])), alpha = alpha2)
+              ggplot2::geom_line(
+                ggplot2::aes_string(y = stats::pnorm(df[, j + k])),
+                alpha = alpha2
+              )
           }
         } else {
           for (j in seq_len(nrow(pd$fd[[i]]))) {
-            g <- g + geom_line(aes_string(y = df[, j + k]), alpha = alpha2)
+            g <- g +
+              ggplot2::geom_line(
+                ggplot2::aes_string(y = df[, j + k]),
+                alpha = alpha2
+              )
           }
         }
       }
 
-      if (ci == TRUE) {
+      if (ci) {
         g <- g +
-          geom_ribbon(
-            aes(ymin = q05, ymax = q95),
+          ggplot2::geom_ribbon(
+            ggplot2::aes(ymin = q05, ymax = q95),
             fill = "deepskyblue1", alpha = 0.3
           )
       }
 
-      g <- g + geom_line(size = 1.25)
+      g <- g + ggplot2::geom_line(size = 1.25)
 
-      if (panels == FALSE) {
-        g <- g + theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))
+      if (!panels) {
+        g <- g +
+          ggplot2::theme(
+            plot.margin = ggplot2::unit(c(0.5, 0.5, 0.5, 0.5), "cm")
+          )
       } else {
-        g <- g + theme(plot.margin = unit(c(0.15, 0.15, 0.15, 0.15), "cm"))
+        g <- g +
+          ggplot2::theme(
+            plot.margin = ggplot2::unit(c(0.15, 0.15, 0.15, 0.15), "cm")
+          )
       }
       plots[[i]] <- g
     }
   }
 
-  if (panels == TRUE) { # print(cowplot::plot_grid(plotlist=plots))
-    return(wrap_plots(plotlist = plots))
+  if (panels) {
+    return(patchwork::wrap_plots(plotlist = plots))
   } else {
     return(plots)
   }

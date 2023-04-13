@@ -70,7 +70,7 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
   for (n.trees in c(10, 20, 50, 100, 150, 200)) {
     cat(paste("\n", n.trees, "tree models:", iter, "iterations\n"))
     if (!quiet) {
-      pb <- txtProgressBar(min = 0, max = iter, style = 3)
+      pb <- utils::txtProgressBar(min = 0, max = iter, style = 3)
     }
 
     for (index in 1:iter) {
@@ -87,7 +87,7 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
         vi.j.df[, index + 1] <- vi.j[, 2]
       }
       if (!quiet) {
-        setTxtProgressBar(pb, index)
+        utils::setTxtProgressBar(pb, index)
       }
     }
     vi.j <- data.frame(
@@ -113,16 +113,16 @@ varimp.diag <- function(x.data, y.data, ri.data = NULL,
 
   vi$names <- factor(vi$variable, levels = vi.fac$variable)
 
-  g1 <- ggplot2::ggplot(vi, aes(y = imp, x = names, group = trees)) +
-    geom_line(aes(color = trees)) +
-    geom_point(size = 3) +
-    theme_classic() +
+  g1 <- ggplot2::ggplot(vi, ggplot2::aes(y = imp, x = names, group = trees)) +
+    ggplot2::geom_line(ggplot2::aes(color = trees)) +
+    ggplot2::geom_point(size = 3) +
+    ggplot2::theme_classic() +
     ylab("Relative contribution\n") +
     xlab("\nVariables dropped") +
     ggpubr::rotate_x_text(angle = 35) +
-    theme(
-      axis.text = element_text(size = 10),
-      axis.title = element_text(size = 14, face = "bold")
+    ggplot2::theme(
+      axis.text = ggplot2::element_text(size = 10),
+      axis.title = ggplot2::element_text(size = 14, face = "bold")
     )
   print(g1)
 }

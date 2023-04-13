@@ -56,7 +56,7 @@
 #'
 #' ### The actual example
 #'
-#' sdm <- bart(
+#' sdm <- dbarts::bart(
 #'   y.train = occ.df[, "Observed"],
 #'   x.train = occ.df[, xnames],
 #'   keeptrees = TRUE
@@ -64,7 +64,7 @@
 #'
 #' plot.mcmc(sdm, climate, iter = 50)
 #'
-#' sdm <- bart(
+#' sdm <- dbarts::bart(
 #'   y.train = occ.df[, "Observed"],
 #'   x.train = occ.df[, xnames],
 #'   keeptrees = TRUE,
@@ -96,7 +96,7 @@ plot.mcmc <- function(object, inputstack, iter = 100,
   } else {
     stop("Variable names of RasterStack don't match the requested names")
   }
-  input.matrix <- as.matrix(getValues(inputstack))
+  input.matrix <- as.matrix(raster::getValues(inputstack))
 
   whichvals <- which(complete.cases(input.matrix))
   input.matrix <- input.matrix[complete.cases(input.matrix), ]
@@ -106,14 +106,14 @@ plot.mcmc <- function(object, inputstack, iter = 100,
 
   cat("\n Generating plots \n")
   if (!quiet) {
-    pb <- txtProgressBar(min = 0, max = iter, style = 3)
+    pb <- utils::txtProgressBar(min = 0, max = iter, style = 3)
   }
   for (i in 1:iter) {
     output.m <- t(matrix(pred[i, ],
       nrow = ncol(inputstack),
       ncol = nrow(inputstack)
     ))
-    r <- raster(output.m,
+    r <- raster::raster(output.m,
       xmn = xmin(inputstack[[1]]), xmx = xmax(inputstack[[1]]),
       ymn = ymin(inputstack[[1]]), ymx = ymax(inputstack[[1]]),
       crs = inputstack[[1]]@crs
@@ -129,7 +129,7 @@ plot.mcmc <- function(object, inputstack, iter = 100,
     plot(r1 / i, box = FALSE, axes = FALSE, zlim = c(0, 1), main = "Mean")
     Sys.sleep(0.1)
     if (!quiet) {
-      setTxtProgressBar(pb, i)
+      utils::setTxtProgressBar(pb, i)
     }
   }
 }

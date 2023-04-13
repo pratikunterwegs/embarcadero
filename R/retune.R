@@ -45,7 +45,7 @@ retune <- function(object, reps = 10) {
 
   priors <- which(x2 == min(x2), arr.ind = TRUE)
 
-  model <- bart(object$fit$data@x,
+  model <- dbarts::bart(object$fit$data@x,
     object$fit$data@y,
     k = c(1, 2, 3)[priors[1]],
     power = c(1.5, 1.6, 1.7, 1.8, 1.9, 2)[priors[2]],

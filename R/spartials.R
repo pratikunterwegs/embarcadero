@@ -89,10 +89,10 @@ spartial <- function(model, envs, x.vars = NULL,
       }
     }
 
-    pd <- pdbart(model, xind = x.vars, levs = lev, pl = FALSE)
+    pd <- dbarts::pdbart(model, xind = x.vars, levs = lev, pl = FALSE)
   } else {
     levq <- c(0.05, seq(0.1, 0.9, 0.1 / smooth), 0.95)
-    pd <- pdbart(model, xind = x.vars, levquants = levq, pl = FALSE)
+    pd <- dbarts::pdbart(model, xind = x.vars, levquants = levq, pl = FALSE)
   }
 
 
@@ -119,7 +119,7 @@ spartial <- function(model, envs, x.vars = NULL,
       dfbin <- reshape2::melt(dfbin)
 
       if (transform == TRUE) {
-        dfbin$value <- pnorm(dfbin$value)
+        dfbin$value <- stats::pnorm(dfbin$value)
       }
 
       df_bin <- dfbin %>%
@@ -149,9 +149,9 @@ spartial <- function(model, envs, x.vars = NULL,
     } else {
       # FOR NON-BINARY VARIABLES
 
-      q50 <- pnorm(apply(pd$fd[[i]], 2, median))
+      q50 <- stats::pnorm(apply(pd$fd[[i]], 2, median))
       if (transform == TRUE) {
-        q50 <- pnorm(q50)
+        q50 <- stats::pnorm(q50)
       }
       df <- data.frame(x = pd$levs[[i]], med = q50)
 

@@ -16,7 +16,7 @@
 plot.ri <- function(model, temporal = TRUE) {
   if (temporal == TRUE) {
     df <- model$ranef %>%
-      as_tibble() %>%
+      tibble::as_tibble() %>%
       gather() %>%
       group_by(key) %>%
       summarise(
@@ -24,23 +24,23 @@ plot.ri <- function(model, temporal = TRUE) {
         upper = quantile(value, 0.975, na.rm = TRUE),
         lower = quantile(value, 0.025, na.rm = TRUE)
       ) %>%
-      mutate(key = as.numeric(key))
+      dplyr::mutate(key = as.numeric(key))
 
-    p <- ggplot(df, aes(x = key, y = mean, ymin = lower, ymax = upper)) +
-      geom_ribbon(fill = "grey95") +
-      geom_line(y = 0, lty = 2, col = "grey20") +
-      geom_line(color = "#00AFDD", lwd = 1.35) +
-      # geom_point(color="#00AFDD", cex=1.5) +
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = key, y = mean, ymin = lower, ymax = upper)) +
+      ggplot2::geom_ribbon(fill = "grey95") +
+      ggplot2::geom_line(y = 0, lty = 2, col = "grey20") +
+      ggplot2::geom_line(color = "#00AFDD", lwd = 1.35) +
+      # ggplot2::geom_point(color="#00AFDD", cex=1.5) +
       xlab(NULL) +
       ylab("Intercept") +
-      theme_bw() +
-      theme(
+      ggplot2::theme_bw() +
+      ggplot2::theme(
         legend.position = "none",
-        axis.text.x = element_text(angle = 90, vjust = 0.5),
-        axis.title.x = element_text(size = rel(1.3), vjust = -0.8),
-        axis.text.y = element_text(size = rel(1.4)),
+        axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5),
+        axis.title.x = ggplot2::element_text(size = rel(1.3), vjust = -0.8),
+        axis.text.y = ggplot2::element_text(size = rel(1.4)),
         plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"),
-        panel.grid.minor = element_blank()
+        panel.grid.minor = ggplot2::element_blank()
       )
   } else {
     p <- model$ranef %>%
@@ -55,23 +55,24 @@ plot.ri <- function(model, temporal = TRUE) {
 
     # transform(key = reorder(key, mean)) %>%
     p <-
-      ggplot(p, aes(x = key, y = mean)) +
-      geom_pointrange(aes(y = mean, x = key, ymin = lower, ymax = upper),
+      ggplot2::ggplot(p, ggplot2::aes(x = key, y = mean)) +
+      ggplot2::geom_pointrange(
+        ggplot2::aes(y = mean, x = key, ymin = lower, ymax = upper),
         color = "#00AFDD"
       ) +
       xlab(NULL) +
       ylab("Intercept") +
       coord_flip() +
-      theme_bw() +
-      theme(
+      ggplot2::theme_bw() +
+      ggplot2::theme(
         legend.position = "none",
-        axis.text.x = element_text(angle = 90),
-        axis.title.x = element_text(size = rel(1.3), vjust = -0.8),
-        axis.text.y = element_text(size = rel(1.4)),
+        axis.text.x = ggplot2::element_text(angle = 90),
+        axis.title.x = ggplot2::element_text(size = rel(1.3), vjust = -0.8),
+        axis.text.y = ggplot2::element_text(size = rel(1.4)),
         plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"),
-        panel.grid.minor = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.grid.major.x = ggplot2::element_blank(),
+        panel.grid.major.y = ggplot2::element_line(
           color = "grey",
           linetype = "dashed"
         )

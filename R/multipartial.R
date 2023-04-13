@@ -9,7 +9,7 @@
 #' specified x value for *each other combination of other x values in the data*.
 #' This is obviously computationally very expensive, and gets slower to run
 #' depending on: how much smooth you add, how many variables you ask for, and
-#' more posterior draws (ndpost; defaults to 1000) in the bart() function.
+#' more posterior draws (ndpost; defaults to 1000) in the dbarts::bart() function.
 #'
 #' This is a somewhat altered and simplified version of partial() that allows
 #' you to combine different species' responses to the same variables on the
@@ -50,11 +50,11 @@
 #' df <- data.frame(z, y, x)
 #' set.seed(99)
 #'
-#' bartFit1 <- bart(y ~ rob + hugh + ed + phil, df,
+#' bartFit1 <- dbarts::bart(y ~ rob + hugh + ed + phil, df,
 #'   keepevery = 10, ntree = 100, keeptrees = TRUE
 #' )
 #'
-#' bartFit2 <- bart(z ~ rob + hugh + ed + phil, df,
+#' bartFit2 <- dbarts::bart(z ~ rob + hugh + ed + phil, df,
 #'   keepevery = 10, ntree = 100, keeptrees = TRUE
 #' )
 #'
@@ -123,7 +123,7 @@ multipartial <- function(modl, spnames, x.vars = NULL,
       }
     }
 
-    pd <- pdbart(model, xind = x.vars, levs = lev, pl = FALSE)
+    pd <- dbarts::pdbart(model, xind = x.vars, levs = lev, pl = FALSE)
   }
 
   pdl <- lapply(modl, pd.get)
@@ -144,13 +144,13 @@ multipartial <- function(modl, spnames, x.vars = NULL,
         q50 <- apply(q50, 2, pnorm)
       }
       df <- q50 %>%
-        as_tibble() %>%
-        mutate(x = pdl[[1]]$levs[[i]])
+        tibble::as_tibble() %>%
+        dplyr::mutate(x = pdl[[1]]$levs[[i]])
     }
 
     df <- df %>%
-      pivot_longer(-x) %>%
-      rename(Species = name)
+      tidyr::pivot_longer(-x) %>%
+      dplyr::rename(Species = name)
 
     if (trace == TRUE) {
       ff <- function(x) {
@@ -161,52 +161,67 @@ multipartial <- function(modl, spnames, x.vars = NULL,
         colnames(f[[k]]) <- gsub("X", "iter", colnames(f[[k]]), fixed = TRUE)
         x.i <- df %>%
           filter(Species == spnames[k]) %>%
-          pull(x)
+          dplyr::pull(x)
         f[[k]]$x <- x.i
         f[[k]]$Species <- spnames[k]
         f[[k]]
       })
       traces <- do.call("rbind", traces)
-      df <- left_join(df, traces)
+      df <- dplyr::left_join(df, traces)
     }
 
-    # if(transform==TRUE) {df %>% mutate(value = pnorm(value)) -> df}
+    # if(transform==TRUE) {df %>% dplyr::mutate(value = stats::pnorm(value)) -> df}
 
-    g <- ggplot(df, aes(x = x, y = value, colour = Species)) +
-      labs(title = pdl[[1]]$xlbs[[i]], y = "", x = "") +
-      theme_light(base_size = 16) +
-      theme(
-        plot.title = element_text(hjust = 0.5),
-        axis.title.y = element_text(vjust = 1.7)
+    g <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = value, colour = Species)) +
+      ggplot2::labs(title = pdl[[1]]$xlbs[[i]], y = "", x = "") +
+      ggplot2::theme_light(base_size = 16) +
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(hjust = 0.5),
+        axis.title.y = ggplot2::element_text(vjust = 1.7)
       )
 
-    if (trace == TRUE) {
-      if (transform == TRUE) {
-        for (j in 3:ncol(df)) {
+    if (trace) {
+      if (transform) {
+        for (j in seq(3, ncol(df))) {
           g <- g +
-            geom_line(aes_string(y = pnorm(pull(df[, j]))), alpha = 0.025)
+            ggplot2::geom_line(
+              ggplot2::aes_string(
+                y = stats::pnorm(dplyr::pull(df[, j]))
+              ),
+              alpha = 0.025
+            )
         }
       } else {
-        for (j in 3:ncol(df)) {
-          g <- g + geom_line(aes_string(y = pull(df[, j])), alpha = 0.025)
+        for (j in seq(3, ncol(df))) {
+          g <- g +
+            ggplot2::geom_line(
+              ggplot2::aes_string(y = dplyr::pull(df[, j])),
+              alpha = 0.025
+            )
         }
       }
     }
 
-    g <- g + geom_line(size = 1.25)
+    g <- g + ggplot2::geom_line(size = 1.25)
 
-    if (panels == FALSE) {
-      g <- g + theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))
+    if (!panels) {
+      g <- g +
+        ggplot2::theme(
+          plot.margin = ggplot2::unit(c(0.5, 0.5, 0.5, 0.5), "cm")
+        )
     } else {
-      g <- g + theme(plot.margin = unit(c(0.15, 0.15, 0.15, 0.15), "cm"))
+      g <- g +
+        ggplot2::theme(
+          plot.margin = ggplot2::unit(c(0.15, 0.15, 0.15, 0.15), "cm")
+        )
     }
     plots[[i]] <- g
   }
 
   # Return them
 
-  if (panels == TRUE) { # print(cowplot::plot_grid(plotlist=plots))
-    return(wrap_plots(plotlist = plots, guides = "collect"))
+  if (panels) {
+    return(patchwork::wrap_plots(plotlist = plots, guides = "collect"))
   } else {
     return(plots)
   }

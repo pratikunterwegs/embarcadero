@@ -61,10 +61,10 @@ varimp <- function(model, plots = FALSE) {
   ))
 
   if (plots == TRUE) {
-    # g1 <- ggplot2::ggplot(var.df, aes(y=varimps, x=names)) +
-    #  geom_bar(stat="identity", color="black") +
-    #  theme(axis.text.x = element_text(angle = 45)) +
-    #  ylab("Relative importance") + theme_bluewhite()
+    # g1 <- ggplot2::ggplot(var.df, ggplot2::aes(y=varimps, x=names)) +
+    #  ggplot2::geom_bar(stat="identity", color="black") +
+    #  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45)) +
+    #  ylab("Relative importance") + ggplot2::theme_bluewhite()
     # print(g1)
 
     if (inherits(model, "rbart")) {
@@ -84,22 +84,22 @@ varimp <- function(model, plots = FALSE) {
       ) %>%
       transform(Var = reorder(key, mean))
 
-    p <- ggplot(p, aes(x = Var, y = mean)) +
-      geom_pointrange(
-        aes(y = mean, x = Var, ymin = mean - sd, ymax = mean + sd),
+    p <- ggplot2::ggplot(p, ggplot2::aes(x = Var, y = mean)) +
+      ggplot2::geom_pointrange(
+        ggplot2::aes(y = mean, x = Var, ymin = mean - sd, ymax = mean + sd),
         color = "#00AFDD"
       ) +
       xlab(NULL) +
       ylab("Variable importance") +
       coord_flip() +
-      theme_bw() +
-      theme(
+      ggplot2::theme_bw() +
+      ggplot2::theme(
         legend.position = "none",
-        axis.title.x = element_text(size = rel(1.3), vjust = -0.8),
-        axis.text.y = element_text(size = rel(1.4)),
+        axis.title.x = ggplot2::element_text(size = rel(1.3), vjust = -0.8),
+        axis.text.y = ggplot2::element_text(size = rel(1.4)),
         plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"),
-        panel.grid.minor = element_blank(),
-        panel.grid.major.x = element_line(
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.grid.major.x = ggplot2::element_line(
           color = "grey",
           linetype = "dashed"
         )
